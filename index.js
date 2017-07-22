@@ -1,13 +1,22 @@
 const OwnerNotifier = require('./lib/owner-notifier');
+const WatcherNotifier = require('./lib/watcher-notifier');
 
 module.exports = robot => {
-  const notify = async function (event) {
-    const github = await robot.auth(event.payload.installation.id);
-    const notifier = new OwnerNotifier(github, event);
+  const notifyOwners = async function (context) {
+    const github = await robot.auth(context.payload.installation.id);
+    const notifier = new OwnerNotifier(github, context);
 
     return notifier.check();
   };
 
-  robot.on('pull_request.opened', notify);
-  robot.on('pull_request.synchronize', notify);
+  const notifyWatchers = async function (context) {
+    const github = await robot.auth(context.payload.installation.id);
+    const notifier = new WatcherNotifier(github, context);
+
+    return notifier.check();
+  };
+
+  robot.on('pull_request.opened', notifyOwners);
+  robot.on('pull_request.synchronize', notifyOwners);
+  robot.on('pull_request.labeled', notifyWatchers);
 };

@@ -4,27 +4,27 @@ const Changes = require('../lib/changes');
 
 describe('Changes', () => {
   let changes;
-  let ownersFile;
+  let file;
   let paths;
 
   describe('owners property', () => {
     beforeEach(() => {
-      ownersFile = {
+      file = {
         for: expect.createSpy().andReturn(['manny', 'moe', 'jack'])
       };
 
       paths = ['foo', 'bar', 'baz'];
 
-      changes = new Changes(paths, ownersFile);
+      changes = new Changes(paths, file);
     });
 
     it('returns the appropriate values', () => {
-      const owners = changes.owners;
+      const fileContents = changes.fileContents;
 
-      expect(owners).toInclude('manny');
-      expect(owners).toInclude('moe');
-      expect(owners).toInclude('jack');
-      expect(owners.length).toEqual(3);
+      expect(fileContents).toInclude('manny');
+      expect(fileContents).toInclude('moe');
+      expect(fileContents).toInclude('jack');
+      expect(fileContents.length).toEqual(3);
     });
   });
 });
